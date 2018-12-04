@@ -166,11 +166,11 @@ class Deck
 		
 			m_cardIndex = 0;
 		};
-
-		const void printcurrCard()
+		
+		const void printcurCard()
 		{
 			m_deck[m_cardIndex].printCard();
-		};
+		}
 		
 		const Card& dealCard()    		// returns a const reference to current card and advances the index
 		{
@@ -199,9 +199,9 @@ bool hit()
 	};
 }
 
-/*
 
-GameResult playBlackjack(std::array<Card,52> &deck)
+
+GameResult playBlackjack(Deck &deck)
 // GameResult type b/c game will return GameResult enum value
 {
 	int playerScore = 0;
@@ -211,30 +211,31 @@ GameResult playBlackjack(std::array<Card,52> &deck)
 	int dealerAceCount = 0;
 
 	
-	// Deal 1 card to dealer and increment cardPtr
+	// Deal 1 card to dealer, update score, update aceCount if any
 	std::cout << "The dealer is showing:" << std::endl;
-	printCard(*cardPtr);
+	deck.printcurCard();
+	dealerScore += deck.dealCard().getCardValue(playerAceCount);
 	std::cout << "\n";
-	
-	// Update dealer score and increment ptr
-	dealerScore += getCardValue(*cardPtr++,dealerAceCount);
 	
 	// Deal 2 cards to player
 	std::cout << "\nYou've been dealt:" << std::endl;
-	printCard(*cardPtr);
+	deck.printcurCard();
+	playerScore += deck.dealCard().getCardValue(playerAceCount);
 	std::cout << "\n";
-	playerScore += getCardValue(*cardPtr++,playerAceCount);
-	printCard(*cardPtr);
+	deck.printcurCard();
+	playerScore += deck.dealCard().getCardValue(playerAceCount);
 	std::cout << "\n";
-	playerScore += getCardValue(*cardPtr++,playerAceCount);
+
+
+
 	
 	// Play user hand
 	while(hit())
 	{
 		std::cout << "You've been dealt:" << std::endl;
-		printCard(*cardPtr);
+		deck.printcurCard();
+		playerScore += deck.dealCard().getCardValue(playerAceCount);
 		std::cout << "\n";
-		playerScore += getCardValue(*cardPtr++,playerAceCount);
 		
 		if(playerScore > 21 && playerAceCount > 0)
 			{	
@@ -258,7 +259,7 @@ GameResult playBlackjack(std::array<Card,52> &deck)
 	while(dealerScore < 17)
 	{
 		// Draw a card, dealer must hit if under 17
-		dealerScore += getCardValue(*cardPtr++,dealerAceCount);
+		dealerScore += deck.dealCard().getCardValue(dealerAceCount);
 		
 		// Check if dealer went over 21
 		if(dealerScore > 21 && dealerAceCount > 0)
@@ -311,7 +312,7 @@ bool playAgain()
 	};
 }
 
-*/
+
 
 
  
@@ -324,10 +325,8 @@ int main()
  	
 	Deck deck;
 	deck.shuffleDeck();
-	deck.printDeck();
-	std::cout << "The first card has value: " << deck.dealCard().getCardValue(playerAceCount) << '\n';
-	std::cout << "The second card has value: " << deck.dealCard().getCardValue(playerAceCount) << '\n';
- 
+	playBlackjack(deck);
+
 	return 0;
     
 }
