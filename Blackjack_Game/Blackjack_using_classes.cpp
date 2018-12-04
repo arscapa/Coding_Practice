@@ -1,6 +1,7 @@
 #include <iostream>
 #include <array>
 #include <ctime>
+#include <cassert>
 
 
 
@@ -113,6 +114,7 @@ class Deck
 {
 	private:
 		std::array<Card, 52> m_deck;
+		int m_cardIndex = 0;
 
 		static void swapCard(Card &a, Card &b)
 		{
@@ -152,22 +154,33 @@ class Deck
 		}
 		
 		void shuffleDeck()
-		{
+		{		
 			for(int i=0; i < 52; i++)
-		{
+			{
 			// Generate a random number between 1-52
 			int swapIndex = getRandomNumber(0,51);
 		
 			// Swap cards
 			swapCard(m_deck[i],m_deck[swapIndex]);
+			}
+		
+			m_cardIndex = 0;
+		};
+
+		const void printcurrCard()
+		{
+			m_deck[m_cardIndex].printCard();
+		};
+		
+		const Card& dealCard()    		// returns a const reference to current card and advances the index
+		{
+			assert (m_cardIndex < 52);
+			return m_deck[m_cardIndex++];
 		}
 };
 
-		
-};
 
 
-/*
 
 bool hit()
 {
@@ -186,6 +199,8 @@ bool hit()
 	};
 }
 
+/*
+
 GameResult playBlackjack(std::array<Card,52> &deck)
 // GameResult type b/c game will return GameResult enum value
 {
@@ -195,9 +210,6 @@ GameResult playBlackjack(std::array<Card,52> &deck)
 	int dealerScore = 0;
 	int dealerAceCount = 0;
 
-	
-	
-	const Card *cardPtr = &deck[0];
 	
 	// Deal 1 card to dealer and increment cardPtr
 	std::cout << "The dealer is showing:" << std::endl;
@@ -306,13 +318,16 @@ bool playAgain()
 int main()
 {
     srand(static_cast<unsigned int>(time(0))); // set initial seed value to system clock
-    rand(); // If using Visual Studio, discard first random value
+	rand(); // If using Visual Studio, discard first random value
+ 	
+ 	int playerAceCount = 0;
+ 	
+	Deck deck;
+	deck.shuffleDeck();
+	deck.printDeck();
+	std::cout << "The first card has value: " << deck.dealCard().getCardValue(playerAceCount) << '\n';
+	std::cout << "The second card has value: " << deck.dealCard().getCardValue(playerAceCount) << '\n';
  
-    Deck deck;
-    deck.printDeck();
-    deck.shuffleDeck();
-    deck.printDeck();
- 
-    return 0;
+	return 0;
     
 }
