@@ -201,9 +201,15 @@ bool hit()
 
 
 
-GameResult playBlackjack(Deck &deck)
+GameResult playBlackjack()
 // GameResult type b/c game will return GameResult enum value
 {
+	srand(static_cast<unsigned int>(time(0))); // set initial seed value to system clock
+	rand(); // If using Visual Studio, discard first random value
+	
+	Deck deck;
+	deck.shuffleDeck();
+	
 	int playerScore = 0;
 	int playerAceCount = 0;
 	
@@ -214,7 +220,7 @@ GameResult playBlackjack(Deck &deck)
 	// Deal 1 card to dealer, update score, update aceCount if any
 	std::cout << "The dealer is showing:" << std::endl;
 	deck.printcurCard();
-	dealerScore += deck.dealCard().getCardValue(playerAceCount);
+	dealerScore += deck.dealCard().getCardValue(dealerAceCount);
 	std::cout << "\n";
 	
 	// Deal 2 cards to player
@@ -314,18 +320,17 @@ bool playAgain()
 
 
 
-
  
 int main()
-{
-    srand(static_cast<unsigned int>(time(0))); // set initial seed value to system clock
-	rand(); // If using Visual Studio, discard first random value
+{	
+ 	do {
+ 		
+	 	playBlackjack();
+	 	
+	} while( playAgain() );
  	
- 	int playerAceCount = 0;
- 	
-	Deck deck;
-	deck.shuffleDeck();
-	playBlackjack(deck);
+	
+
 
 	return 0;
     
