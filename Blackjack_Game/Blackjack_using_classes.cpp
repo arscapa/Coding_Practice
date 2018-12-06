@@ -288,7 +288,7 @@ GameResult playBlackjack()
 		std::cout << "The dealer has " << dealerScore << ". YOU WIN!" << std::endl;
 		return BLACKJACK_WIN;
 	}
-	if (playerScore = dealerScore)
+	if (playerScore == dealerScore)
 	{
 		std::cout << "Both the dealer and you have " << dealerScore << ". You've tied. Push" << std::endl;
 		return BLACKJACK_LOSS;	
