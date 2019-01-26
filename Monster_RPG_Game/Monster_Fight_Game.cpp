@@ -122,6 +122,7 @@ bool playAgain()
 	std::cout << "\nWould you like to play again (y/n)? ";
 	char response;
 	std::cin >> response;
+	std::cin.ignore(32767,'\n');
 	
 	if(tolower(response) == 'y'){
 		return true;
@@ -134,6 +135,24 @@ bool playAgain()
 	};
 }
 
+void attackMonster(Player &p1, Monster &m1)
+{
+	m1.reduceHealth(p1.getDamage());
+	std::cout << "You hit the " << m1.getName() << " for " << m1.getDamage() << " damage." << std::endl;
+	
+	if(m1.getHealth() <= 0)
+	{
+		std::cout << "You killed the " << m1.getName() << ".\n";
+		p1.levelUp();
+		std::cout << "You are now a level " << p1.getLevel() << std::endl;
+		std::cout << "You've taken " << m1.getGold() << " gold from the " << m1.getName() << std::endl;
+		p1.addGold(m1.getGold());
+	}
+	else
+	{
+		std::cout << "The monster has attacked you" << std::endl;
+	}
+}
 
 void fightMonster(Player &p1)
 {
@@ -148,12 +167,16 @@ void fightMonster(Player &p1)
 		std::cin.ignore(32767,'\n');
 		if(tolower(decision)=='r')
 			{
-				std::cout << "you've selected Run" << std::endl;
+				int escape = getRandomNumber(0,1);
+				if(escape == 0)
+					std::cout << "You've successfully fled " << std::endl;
+				else
+					std::cout << "You were not quick enough. The " << m.getName() << " caught up to you. " << std::endl;
 				break;
 			}
 		else if (tolower(decision)=='f')
 			{
-				std::cout << "You've selected Fight" << std::endl;
+				attackMonster(p1,m);
 				break;
 			}
 		else
@@ -161,10 +184,9 @@ void fightMonster(Player &p1)
 			std::cout << "Please enter an 'r' or an 'f'" << std::endl;
 		}
 		}while(true);
-
-			
 		
 }
+
 
 
 int main()
@@ -182,8 +204,15 @@ int main()
 		Player player1(name);
 		std::cout << "Welcome, " << player1.getName() << std::endl;
 	
-		fightMonster(player1);
-
+		while(player1.getHealth() > 0 && player1.getLevel() < 20)
+			{
+				fightMonster(player1);
+			}
+		if (player1.getHealth() <= 0)
+			std::cout << "You died at level " << player1.getLevel() << " and with " << player1.getGold() << " gold.\n";
+		else
+			std::cout << "YOU WON! You've reached level " << player1.getLevel() << " and collected a total of " << player1.getGold() << " gold.\n";
+	
 	
 	} while(playAgain());
  
