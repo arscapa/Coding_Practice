@@ -135,12 +135,20 @@ bool playAgain()
 	};
 }
 
+void attackPlayer(Player &p1, Monster &m1)
+{
+	// Monster attacks player
+	p1.reduceHealth(m1.getDamage());
+	std::cout << "The " << m1.getName() << " hit you for " << m1.getDamage() << ".\n";	
+}
+
 void attackMonster(Player &p1, Monster &m1)
 {
+	// Reduce the monster's health by the player's damage
 	m1.reduceHealth(p1.getDamage());
-	std::cout << "You hit the " << m1.getName() << " for " << m1.getDamage() << " damage." << std::endl;
+	std::cout << "You hit the " << m1.getName() << " for " << p1.getDamage() << " damage." << std::endl;
 	
-	if(m1.getHealth() <= 0)
+	if(m1.isDead())
 	{
 		std::cout << "You killed the " << m1.getName() << ".\n";
 		p1.levelUp();
@@ -151,8 +159,10 @@ void attackMonster(Player &p1, Monster &m1)
 	else
 	{
 		std::cout << "The monster has attacked you" << std::endl;
+		attackPlayer(p1,m1);
 	}
 }
+
 
 void fightMonster(Player &p1)
 {
@@ -168,11 +178,15 @@ void fightMonster(Player &p1)
 		if(tolower(decision)=='r')
 			{
 				int escape = getRandomNumber(0,1);
-				if(escape == 0)
+				if(escape == 0){
 					std::cout << "You've successfully fled " << std::endl;
-				else
+					return;
+				}
+				else {
 					std::cout << "You were not quick enough. The " << m.getName() << " caught up to you. " << std::endl;
-				break;
+					attackPlayer(p1,m);
+					return;
+				}
 			}
 		else if (tolower(decision)=='f')
 			{
@@ -204,11 +218,11 @@ int main()
 		Player player1(name);
 		std::cout << "Welcome, " << player1.getName() << std::endl;
 	
-		while(player1.getHealth() > 0 && player1.getLevel() < 20)
+		while(!player1.isDead() && !player1.hasWon())
 			{
 				fightMonster(player1);
 			}
-		if (player1.getHealth() <= 0)
+		if (player1.isDead())
 			std::cout << "You died at level " << player1.getLevel() << " and with " << player1.getGold() << " gold.\n";
 		else
 			std::cout << "YOU WON! You've reached level " << player1.getLevel() << " and collected a total of " << player1.getGold() << " gold.\n";
